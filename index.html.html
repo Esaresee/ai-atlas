@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The AI Productivity Atlas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Outfit:wght@300;500;700&display=swap');
+
+        :root {
+            --primary: #0f172a;
+            --secondary: #334155;
+            --accent: #3b82f6;
+            --accent-glow: rgba(59, 130, 246, 0.5);
+            --bg: #f1f5f9;
+            --page-bg: #ffffff;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --page-width: 900px;
+            --page-height: 1200px;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        body.dark-mode {
+            --primary: #f8fafc;
+            --secondary: #cbd5e1;
+            --accent: #60a5fa;
+            --accent-glow: rgba(96, 165, 250, 0.4);
+            --bg: #0f172a;
+            --page-bg: #1e293b;
+            --card-bg: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #475569;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            margin: 0;
+            padding: 40px;
+            background-color: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            transition: background-color 0.3s ease;
+        }
+
+        /* Page Container */
+        .page {
+            width: var(--page-width);
+            height: var(--page-height);
+            background-color: var(--page-bg);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border-radius: 4px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .page-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 60px 80px;
+            scrollbar-width: none; 
+            -ms-overflow-style: none;
+        }
+        .page-content::-webkit-scrollbar { display: none; }
+
+        /* --- GLOBAL UI ELEMENTS --- */
+        .copyright-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 0;
+            background: var(--page-bg);
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+            transition: background 0.3s, border-color 0.3s;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            z-index: 1000;
+            transition: transform 0.2s;
+        }
+        .theme-toggle:hover { transform: scale(1.1); }
+
+        /* --- COVER PAGE --- */
+        #cover {
+            background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.7)), url('cover.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        #cover .copyright-footer {
+            background: transparent;
+            border-top: none;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .cover-content { z-index: 1; padding: 60px; animation: fadeIn 1.5s ease-out; }
+
+        .cover-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 80px;
+            line-height: 1;
+            margin-bottom: 24px;
+            letter-spacing: -3px;
+            background: linear-gradient(to bottom right, #ffffff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .cover-subtitle {
+            font-size: 22px;
+            font-weight: 300;
+            color: #cbd5e1;
+            margin-bottom: 80px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .signature {
+            font-family: 'cursive'; 
+            font-style: italic;
+            font-size: 32px;
+            color: #fff;
+            opacity: 0.9;
+            margin-top: 120px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 16px 48px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .btn:hover {
+            background: white;
+            color: #0f172a;
+            transform: translateY(-2px);
+        }
+
+        /* --- SYNOPSIS PAGE --- */
+        #synopsis { justify-content: center; align-items: center; }
+        .synopsis-container { max-width: 600px; text-align: center; }
+        .synopsis-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--accent);
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+        .synopsis-text {
+            font-size: 24px;
+            line-height: 1.6;
+            font-weight: 300;
+            color: var(--primary);
+            margin-bottom: 60px;
+        }
+
+        /* --- ATLAS PAGE --- */
+        .atlas-header { text-align: center; margin-bottom: 30px; }
+        .atlas-header h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 42px;
+            margin: 0;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+        .atlas-header h2 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            margin-top: 15px;
+        }
+
+        /* Search Bar */
+        .search-container {
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: center;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 25px;
+            border-radius: 30px;
+            border: 1px solid var(--border);
+            background: var(--card-bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.15);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+            display: block;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+        .card.hidden { display: none; }
+
+        .card-number {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+        .card-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        .card-list { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+        
+        .stack-count {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: none; /* Hidden by default */
+        }
+
+        /* --- CHAPTER PAGES --- */
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .back-link:hover { color: var(--primary); }
+
+        /* Pricing Toggle */
+        .pricing-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        .toggle-switch {
+            width: 36px;
+            height: 20px;
+            background: var(--border);
+            border-radius: 20px;
+            position: relative;
+            transition: background 0.3s;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .pricing-toggle.active .toggle-switch { background: var(--accent); }
+        .pricing-toggle.active .toggle-switch::after { transform: translateX(16px); }
+
+        .chapter-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 48px;
+            color: var(--primary);
+            margin: 0 0 20px 0;
+            letter-spacing: -1px;
+        }
+        .chapter-intro {
+            font-size: 18px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 50px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            background: var(--bg);
+            padding: 15px 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+        .tool-item.hidden { display: none; }
+        .tool-item:hover {
+            border-color: var(--accent);
+            transform: translateX(5px);
+        }
+
+        /* Checkbox for My Stack */
+        .tool-check {
+            margin-right: 15px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .tool-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .tool-name { font-weight: 700; color: var(--primary); font-size: 15px; }
+        .tool-desc { font-size: 13px; color: var(--text-muted); margin-left: 15px; flex: 1; }
+        .tool-meta { display: flex; align-items: center; gap: 10px; }
+        .tool-price { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: var(--border); color: var(--text-muted); font-weight: 600; }
+        .tool-link-icon { color: var(--accent); font-size: 12px; }
+
+        .section-header {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            color: var(--primary);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .section-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--bg);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .content-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        .content-card.best { border-left: 4px solid #10b981; }
+        .content-card.warning { border-left: 4px solid #ef4444; }
+
+        .text-block {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        ul.strategy-list li { margin-bottom: 10px; color: var(--text-muted); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+    <button class="theme-toggle" onclick="toggleDarkMode()" title="Toggle Dark Mode">◑</button>
+
+    <!-- PAGE 1: COVER -->
+    <div class="page" id="cover">
+        <div class="cover-content">
+            <div class="cover-title">The AI<br>Productivity<br>Atlas</div>
+            <div class="cover-subtitle">Unlock Your Potential with the Ultimate AI Toolkit</div>
+            <a href="#synopsis" class="btn">Begin the Journey</a>
+            <div class="signature">Steven Ray Counts</div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- PAGE 2: SYNOPSIS -->
+    <div class="page" id="synopsis">
+        <div class="page-content" style="display:flex; flex-direction:column; justify-content:center; align-items:center;">
+            <div class="synopsis-container">
+                <div class="synopsis-title">Foreword</div>
+                <div class="synopsis-text">
+                    "The AI landscape is no longer about novelty; it is about utility. In 2025, the divide between those who use AI and those who master it has widened. This Atlas is not just a list of tools—it is a curated strategic framework designed to cut through the noise. We have tested thousands of models and applications to bring you the 'Vital Few' that actually move the needle for productivity. Welcome to your new operating system."
+                </div>
+                <a href="#atlas" class="btn" style="background:var(--primary); color:var(--page-bg);">Enter the Atlas</a>
+            </div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- PAGE 3: THE ATLAS -->
+    <div class="page" id="atlas">
+        <div class="page-content">
+            <header class="atlas-header">
+                <h1>The Atlas</h1>
+                <h2>Part I: The Toolkit — 2025 Edition</h2>
+            </header>
+
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search for tools or categories..." onkeyup="searchAtlas(this.value)">
+            </div>
+
+            <div class="grid" id="atlas-grid">
+                <a href="#chapter-1" class="card" data-keywords="llm chatgpt claude perplexity gemini copilot assistants">
+                    <span class="card-number">01</span>
+                    <div class="card-title">LLMs & Assistants</div>
+                    <div class="card-list">ChatGPT, Claude, Perplexity, Gemini, Copilot</div>
+                    <div class="stack-count" id="count-1">0</div>
+                </a>
+                <a href="#chapter-2" class="card" data-keywords="writing copy jasper notion grammarly writer">
+                    <span class="card-number">02</span>
+                    <div class="card-title">Writing & Copy</div>
+                    <div class="card-list">Jasper, Copy.ai, Grammarly, Notion, Writer</div>
+                    <div class="stack-count" id="count-2">0</div>
+                </a>
+                <a href="#chapter-3" class="card" data-keywords="image generation midjourney dalle firefly leonardo magnific">
+                    <span class="card-number">03</span>
+                    <div class="card-title">Image Generation</div>
+                    <div class="card-list">Midjourney, DALL-E 3, Firefly, Leonardo, Magnific</div>
+                    <div class="stack-count" id="count-3">0</div>
+                </a>
+                <a href="#chapter-4" class="card" data-keywords="video avatars runway heygen descript luma topaz">
+                    <span class="card-number">04</span>
+                    <div class="card-title">Video & Avatars</div>
+                    <div class="card-list">Runway, HeyGen, Descript, Luma, Topaz</div>
+                    <div class="stack-count" id="count-4">0</div>
+                </a>
+                <a href="#chapter-5" class="card" data-keywords="coding dev cursor github copilot replit tabnine lovable">
+                    <span class="card-number">05</span>
+                    <div class="card-title">Coding & Dev</div>
+                    <div class="card-list">Cursor, GitHub Copilot, Replit, Tabnine, Lovable</div>
+                    <div class="stack-count" id="count-5">0</div>
+                </a>
+                <a href="#chapter-6" class="card" data-keywords="workflow automation zapier make bardeen relay n8n">
+                    <span class="card-number">06</span>
+                    <div class="card-title">Workflow Automation</div>
+                    <div class="card-list">Zapier, Make, Bardeen, Relay, n8n</div>
+                    <div class="stack-count" id="count-6">0</div>
+                </a>
+                <a href="#chapter-7" class="card" data-keywords="meetings notes otter fireflies supernormal limitless fathom">
+                    <span class="card-number">07</span>
+                    <div class="card-title">Meetings & Notes</div>
+                    <div class="card-list">Otter, Fireflies, Supernormal, Limitless, Fathom</div>
+                    <div class="stack-count" id="count-7">0</div>
+                </a>
+                <a href="#chapter-8" class="card" data-keywords="research data consensus julius chatpdf elicit notebooklm">
+                    <span class="card-number">08</span>
+                    <div class="card-title">Research & Data</div>
+                    <div class="card-list">Consensus, Julius, ChatPDF, Elicit, NotebookLM</div>
+                    <div class="stack-count" id="count-8">0</div>
+                </a>
+            </div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 1 -->
+    <div class="page" id="chapter-1">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)">
+                    <div class="toggle-switch"></div>
+                    <span>Show Free/Freemium Only</span>
+                </div>
+            </div>
+            
+            <div class="chapter-header">
+                <h1 class="chapter-title">LLMs & Assistants</h1>
+                <div class="chapter-intro">The frontier models for reasoning and coding.</div>
+            </div>
+
+            <div class="tool-grid">
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('chatgpt', 1)">
+                    <a href="https://chat.openai.com" target="_blank" class="tool-info">
+                        <span class="tool-name">ChatGPT Plus</span>
+                        <span class="tool-desc">The best all-rounder.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('claude', 1)">
+                    <a href="https://claude.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Claude 3.5 Sonnet</span>
+                        <span class="tool-desc">Superior coding.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('perplexity', 1)">
+                    <a href="https://www.perplexity.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Perplexity Pro</span>
+                        <span class="tool-desc">Real-time search.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('gemini', 1)">
+                    <a href="https://gemini.google.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Gemini Advanced</span>
+                        <span class="tool-desc">Google integration.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('copilot', 1)">
+                    <a href="https://copilot.microsoft.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Microsoft Copilot</span>
+                        <span class="tool-desc">Enterprise security.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header"><div class="section-icon">★</div> Why they are the best</div>
+                <div class="content-card best">
+                    <div class="text-block"><strong>Claude 3.5 Sonnet</strong> currently holds the crown for coding. <strong>ChatGPT</strong> is the best "Swiss Army Knife".</div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div class="section-icon">✓</div> Best Practices</div>
+                <div class="content-card"><ul class="strategy-list"><li>Persona Priming: "You are a [Role]".</li><li>Chain of Thought: "Think step-by-step".</li></ul></div>
+            </div>
+            <div class="section">
+                <div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div>
+                <div class="content-card warning"><div class="text-block"><strong>Hallucinations:</strong> Always verify facts.</div></div>
+            </div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 2 -->
+    <div class="page" id="chapter-2">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Writing & Copy</h1><div class="chapter-intro">Marketing and content workflows.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('jasper', 2)">
+                    <a href="https://www.jasper.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Jasper</span><span class="tool-desc">Enterprise marketing.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('copyai', 2)">
+                    <a href="https://www.copy.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Copy.ai</span><span class="tool-desc">Bulk content.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('grammarly', 2)">
+                    <a href="https://www.grammarly.com" target="_blank" class="tool-info">
+                        <span class="tool-name">GrammarlyGO</span><span class="tool-desc">Polishes writing.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('notion', 2)">
+                    <a href="https://www.notion.so" target="_blank" class="tool-info">
+                        <span class="tool-name">Notion AI</span><span class="tool-desc">Docs assistant.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('writer', 2)">
+                    <a href="https://writer.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Writer</span><span class="tool-desc">Full-stack enterprise.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>Jasper</strong> excels at brand voice. <strong>Notion AI</strong> lives where your work is.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Use for "Vomit Drafts".</li><li>Human Polish is required.</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>"AI-ese":</strong> Avoid bland, repetitive text.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 3 -->
+    <div class="page" id="chapter-3">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Image Generation</h1><div class="chapter-intro">Visuals and photorealism.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('midjourney', 3)">
+                    <a href="https://www.midjourney.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Midjourney v6</span><span class="tool-desc">Highest quality.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('dalle', 3)">
+                    <a href="https://openai.com/dall-e-3" target="_blank" class="tool-info">
+                        <span class="tool-name">DALL-E 3</span><span class="tool-desc">Easiest to use.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('firefly', 3)">
+                    <a href="https://firefly.adobe.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Adobe Firefly</span><span class="tool-desc">Commercial safe.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('leonardo', 3)">
+                    <a href="https://www.leonardo.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Leonardo.ai</span><span class="tool-desc">Game assets.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('magnific', 3)">
+                    <a href="https://magnific.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Magnific AI</span><span class="tool-desc">Upscaling.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>Midjourney</strong> is the king of aesthetics. <strong>Magnific</strong> restores details.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Use Reference Images.</li><li>Specify Aspect Ratios (--ar).</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>Text Rendering:</strong> Still imperfect.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 4 -->
+    <div class="page" id="chapter-4">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Video & Avatars</h1><div class="chapter-intro">Generative video and cloning.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('runway', 4)">
+                    <a href="https://runwayml.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Runway</span><span class="tool-desc">Generative video.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('heygen', 4)">
+                    <a href="https://www.heygen.com" target="_blank" class="tool-info">
+                        <span class="tool-name">HeyGen</span><span class="tool-desc">Realistic avatars.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('descript', 4)">
+                    <a href="https://www.descript.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Descript</span><span class="tool-desc">Edit video as text.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('luma', 4)">
+                    <a href="https://lumalabs.ai/dream-machine" target="_blank" class="tool-info">
+                        <span class="tool-name">Luma</span><span class="tool-desc">Fast generation.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('topaz', 4)">
+                    <a href="https://www.topazlabs.com/video-ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Topaz</span><span class="tool-desc">Video restoration.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>HeyGen</strong> has best lip-sync. <strong>Descript</strong> revolutionizes editing.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Keep clips short (2-4s).</li><li>Record high-quality audio first.</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>Uncanny Valley:</strong> Avoid 99% realism; go for 100% or stylized.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 5 -->
+    <div class="page" id="chapter-5">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Coding & Dev</h1><div class="chapter-intro">Logic and force multipliers.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('cursor', 5)">
+                    <a href="https://www.cursor.sh" target="_blank" class="tool-info">
+                        <span class="tool-name">Cursor</span><span class="tool-desc">Best AI editor.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('githubcopilot', 5)">
+                    <a href="https://github.com/features/copilot" target="_blank" class="tool-info">
+                        <span class="tool-name">GitHub Copilot</span><span class="tool-desc">Standard.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('replit', 5)">
+                    <a href="https://replit.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Replit</span><span class="tool-desc">Cloud IDE agent.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('tabnine', 5)">
+                    <a href="https://www.tabnine.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Tabnine</span><span class="tool-desc">Private & secure.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('lovable', 5)">
+                    <a href="https://lovable.dev" target="_blank" class="tool-info">
+                        <span class="tool-name">Lovable</span><span class="tool-desc">UI generation.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>Cursor</strong> understands your whole codebase. <strong>Lovable</strong> builds UI from text.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Review code, don't just accept.</li><li>Test Driven Development (TDD).</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>Security:</strong> Audit dependencies.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 6 -->
+    <div class="page" id="chapter-6">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Workflow Automation</h1><div class="chapter-intro">Connecting apps and data.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('zapier', 6)">
+                    <a href="https://zapier.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Zapier</span><span class="tool-desc">Most compatible.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('make', 6)">
+                    <a href="https://www.make.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Make</span><span class="tool-desc">Visual logic.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('bardeen', 6)">
+                    <a href="https://www.bardeen.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Bardeen</span><span class="tool-desc">Browser scraping.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('relay', 6)">
+                    <a href="https://relay.app" target="_blank" class="tool-info">
+                        <span class="tool-name">Relay.app</span><span class="tool-desc">Human-in-the-loop.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('n8n', 6)">
+                    <a href="https://n8n.io" target="_blank" class="tool-info">
+                        <span class="tool-name">n8n</span><span class="tool-desc">Self-hostable.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>Make</strong> is powerful for logic. <strong>Relay</strong> handles approvals well.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Start simple.</li><li>Document your flows.</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>Infinite Loops:</strong> Watch your credits.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 7 -->
+    <div class="page" id="chapter-7">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Meetings & Notes</h1><div class="chapter-intro">Automated transcription.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('otter', 7)">
+                    <a href="https://otter.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Otter.ai</span><span class="tool-desc">Reliable veteran.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('fireflies', 7)">
+                    <a href="https://fireflies.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Fireflies.ai</span><span class="tool-desc">CRM integration.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('supernormal', 7)">
+                    <a href="https://supernormal.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Supernormal</span><span class="tool-desc">Google Meet best.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('limitless', 7)">
+                    <a href="https://limitless.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Limitless</span><span class="tool-desc">Captures everything.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('fathom', 7)">
+                    <a href="https://fathom.video" target="_blank" class="tool-info">
+                        <span class="tool-name">Fathom</span><span class="tool-desc">Free for individuals.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>Supernormal</strong> formats notes well. <strong>Limitless</strong> records real life.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Announce recording.</li><li>Review Action Items.</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>Ghost Bots:</strong> Don't auto-join every meeting.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <!-- CHAPTER 8 -->
+    <div class="page" id="chapter-8">
+        <div class="page-content">
+            <div class="chapter-nav">
+                <a href="#atlas" class="back-link">← Back to Atlas</a>
+                <div class="pricing-toggle" onclick="togglePricing(this)"><div class="toggle-switch"></div><span>Show Free/Freemium Only</span></div>
+            </div>
+            <div class="chapter-header"><h1 class="chapter-title">Research & Data</h1><div class="chapter-intro">Grounded, cited answers.</div></div>
+            <div class="tool-grid">
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('consensus', 8)">
+                    <a href="https://consensus.app" target="_blank" class="tool-info">
+                        <span class="tool-name">Consensus</span><span class="tool-desc">Scientific search.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="paid">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('julius', 8)">
+                    <a href="https://julius.ai" target="_blank" class="tool-info">
+                        <span class="tool-name">Julius AI</span><span class="tool-desc">Data analyst.</span>
+                        <div class="tool-meta"><span class="tool-price">Paid</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('chatpdf', 8)">
+                    <a href="https://www.chatpdf.com" target="_blank" class="tool-info">
+                        <span class="tool-name">ChatPDF</span><span class="tool-desc">Chat with PDFs.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('elicit', 8)">
+                    <a href="https://elicit.com" target="_blank" class="tool-info">
+                        <span class="tool-name">Elicit</span><span class="tool-desc">Literature review.</span>
+                        <div class="tool-meta"><span class="tool-price">Freemium</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+                <div class="tool-item" data-price="free">
+                    <input type="checkbox" class="tool-check" onchange="updateStack('notebooklm', 8)">
+                    <a href="https://notebooklm.google.com" target="_blank" class="tool-info">
+                        <span class="tool-name">NotebookLM</span><span class="tool-desc">Grounded in docs.</span>
+                        <div class="tool-meta"><span class="tool-price">Free</span><span class="tool-link-icon">↗</span></div>
+                    </a>
+                </div>
+            </div>
+            <div class="section"><div class="section-header"><div class="section-icon">★</div> Why they are the best</div><div class="content-card best"><div class="text-block"><strong>NotebookLM</strong> is revolutionary for document chat. <strong>Consensus</strong> cites studies.</div></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">✓</div> Best Practices</div><div class="content-card"><ul class="strategy-list"><li>Use RAG (Upload docs).</li><li>Ask for page citations.</li></ul></div></div>
+            <div class="section"><div class="section-header"><div class="section-icon">⚠</div> What to be careful of</div><div class="content-card warning"><div class="text-block"><strong>Confirmation Bias:</strong> Ask for counter-arguments.</div></div></div>
+        </div>
+        <div class="copyright-footer">© 2025 Steven Ray Counts. All Rights Reserved.</div>
+    </div>
+
+    <script>
+        // --- DARK MODE ---
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem('ai_atlas_theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+        
+        // Initialize Theme
+        if (localStorage.getItem('ai_atlas_theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+        }
+
+        // --- MY STACK (PERSISTENCE) ---
+        let myStack = JSON.parse(localStorage.getItem('ai_atlas_stack')) || {};
+
+        function updateStack(toolId, chapterId) {
+            myStack[toolId] = !myStack[toolId]; // Toggle
+            localStorage.setItem('ai_atlas_stack', JSON.stringify(myStack));
+            updateAtlasCounts();
+        }
+
+        function loadStack() {
+            // Restore checkboxes
+            document.querySelectorAll('.tool-check').forEach(box => {
+                // Get toolId from the onchange attribute for simplicity in this static file
+                const onchange = box.getAttribute('onchange');
+                const toolId = onchange.match(/'([^']+)'/)[1];
+                if (myStack[toolId]) {
+                    box.checked = true;
+                }
+            });
+            updateAtlasCounts();
+        }
+
+        function updateAtlasCounts() {
+            // Count items per chapter
+            const counts = {};
+            document.querySelectorAll('.tool-check').forEach(box => {
+                const onchange = box.getAttribute('onchange');
+                const toolId = onchange.match(/'([^']+)'/)[1];
+                const chapterId = onchange.match(/, (\d+)\)/)[1];
+                
+                if (myStack[toolId]) {
+                    counts[chapterId] = (counts[chapterId] || 0) + 1;
+                }
+            });
+
+            // Update UI
+            for (let i = 1; i <= 8; i++) {
+                const badge = document.getElementById(`count-${i}`);
+                if (counts[i] > 0) {
+                    badge.innerText = `${counts[i]} Selected`;
+                    badge.style.display = 'block';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+        }
+
+        // --- PRICING FILTER ---
+        function togglePricing(element) {
+            element.classList.toggle('active');
+            const showFreeOnly = element.classList.contains('active');
+            
+            // Find the parent page to scope the filter
+            const page = element.closest('.page');
+            const items = page.querySelectorAll('.tool-item');
+            
+            items.forEach(item => {
+                const price = item.getAttribute('data-price');
+                if (showFreeOnly && price === 'paid') {
+                    item.classList.add('hidden');
+                } else {
+                    item.classList.remove('hidden');
+                }
+            });
+        }
+
+        // --- SEARCH BAR ---
+        function searchAtlas(query) {
+            query = query.toLowerCase();
+            const cards = document.querySelectorAll('#atlas-grid .card');
+            
+            cards.forEach(card => {
+                const keywords = card.getAttribute('data-keywords');
+                const title = card.querySelector('.card-title').innerText.toLowerCase();
+                const list = card.querySelector('.card-list').innerText.toLowerCase();
+                
+                if (title.includes(query) || list.includes(query) || keywords.includes(query)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        // Init on load
+        window.addEventListener('DOMContentLoaded', loadStack);
+
+    </script>
+</body>
+</html>
