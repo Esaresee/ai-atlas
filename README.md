@@ -21,8 +21,7 @@ A premium, interactive guide to the best AI tools of 2025. This single-file appl
 
 To share this guide with others, you can host it for free:
 
-- **GitHub Pages**: Upload to a repository and enable Pages.
-- **Netlify Drop**: Drag and drop the folder to Netlify.
+- **GitHub Pages**: Upload to a repository and enable Pages
 
 ## Credits
 
